@@ -129,6 +129,7 @@ footer {
 }
 
 /* Add these styles to the existing style.css */
+
 .video-container {
   display: flex;
   justify-content: space-between;
@@ -151,7 +152,7 @@ footer {
   transform: scale(1.05);
 }
 
-.video-container a {
+video-container a {
   color: #FF9900;
   text-decoration: none;
 }
@@ -164,6 +165,118 @@ footer {
 
 @media screen and (max-width: 768px) {
   .video {
+    width: 100%;
+  }
+}
+
+/* Food Waste Collector Contact Button */
+#food-waste-collector {
+  background-color: #222;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#food-waste-collector h2 {
+  font-size: 24px;
+  color: #FF9900;
+}
+
+#food-waste-collector button {
+  background-color: #FF5733;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+#food-waste-collector button:hover {
+  background-color: #e84d2e;
+}
+
+/* Food Rescue Map */
+#food-rescue-map {
+  background-color: #333;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#food-rescue-map h2 {
+  font-size: 24px;
+  color: #FF9900;
+}
+
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Form Styles */
+form {
+  margin-top: 20px;
+}
+
+form input, form button {
+  width: 100%;
+}
+
+form button {
+  background-color: #FF9900;
+}
+
+form button:hover {
+  background-color: #e68900;
+}
+
+form input[type="text"], form input[type="number"], form textarea {
+  width: 100%;
+}
+
+/* Educational Videos */
+#youtube-videos {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#youtube-videos .video-container {
+  margin-bottom: 20px;
+}
+
+#youtube-videos iframe {
+  width: 100%;
+  border-radius: 8px;
+}
+
+#youtube-videos p {
+  font-size: 18px;
+  color: #FF9900;
+  text-align: center;
+}
+
+#youtube-videos a {
+  font-size: 18px;
+  color: #FF9900;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#youtube-videos a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  #youtube-videos .video-container iframe {
     width: 100%;
   }
 }
