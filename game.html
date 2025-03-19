@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Rescue Challenge</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>🥦 Food Rescue Challenge 🍎</h1>
+        <p>Drag the food items to the correct category!</p>
+
+        <div class="game-area">
+            <div class="food-items">
+                <div class="food" draggable="true" id="apple">🍎</div>
+                <div class="food" draggable="true" id="banana">🍌</div>
+                <div class="food" draggable="true" id="bread">🍞</div>
+                <div class="food" draggable="true" id="fish">🐟</div>
+                <div class="food" draggable="true" id="rottenFruit">🤢</div>
+            </div>
+
+            <div class="drop-zones">
+                <div class="zone" id="edible">✅ Edible</div>
+                <div class="zone" id="compost">♻️ Compost</div>
+            </div>
+        </div>
+
+        <div class="score-area">
+            <p>Score: <span id="score">0</span></p>
+            <button id="restart">Restart Game</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
