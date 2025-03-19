@@ -62,7 +62,7 @@
   
   <!-- Game Container -->
   <div id="gameContainer" style="display:none; border: 2px solid #ccc; padding: 20px; margin-top: 10px;">
-    <p>🍎 Catch the falling food to save it from being wasted! 🍕</p>
+    <p>🍎 Catch the green food, avoid the red! 🍏</p>
     <canvas id="gameCanvas" width="300" height="400" style="background-color: #f0f0f0;"></canvas>
     <p>Score: <span id="scoreDisplay">0</span></p>
     <br>
@@ -80,7 +80,7 @@
   const ctx = canvas.getContext('2d');
   const scoreDisplay = document.getElementById('scoreDisplay');
 
-  let food = { x: Math.random() * 280, y: 0, size: 20, speed: 2 };
+  let food = { x: Math.random() * 280, y: 0, size: 20, speed: 2, type: 'green' };
   let basket = { x: 130, y: 370, width: 40, height: 10 };
   let score = 0;
   let gameInterval;
@@ -90,9 +90,15 @@
     gameContainer.style.display = 'block';
     score = 0;
     updateScore();
+    spawnFood();
+    gameInterval = setInterval(updateGame, 20);
+  }
+
+  // Spawn new food (green or red)
+  function spawnFood() {
     food.y = 0;
     food.x = Math.random() * 280;
-    gameInterval = setInterval(updateGame, 20);
+    food.type = Math.random() < 0.7 ? 'green' : 'red'; // 70% chance green, 30% red
   }
 
   // Update game state
@@ -100,7 +106,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw food
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = food.type === 'green' ? 'green' : 'red';
     ctx.beginPath();
     ctx.arc(food.x, food.y, food.size, 0, Math.PI * 2);
     ctx.fill();
@@ -118,17 +124,24 @@
       food.x > basket.x &&
       food.x < basket.x + basket.width
     ) {
-      score++;
+      if (food.type === 'green') {
+        score++;
+      } else {
+        score--;
+      }
       updateScore();
-      food.y = 0;
-      food.x = Math.random() * 280;
+      spawnFood(); // Spawn new food after catch
     }
 
     // Check if food hits the ground
     if (food.y > canvas.height) {
-      alert(`Game Over! Your score: ${score}`);
-      clearInterval(gameInterval);
-      gameContainer.style.display = 'none';
+      if (food.type === 'green') {
+        alert(`Game Over! Your score: ${score}`);
+        clearInterval(gameInterval);
+        gameContainer.style.display = 'none';
+      } else {
+        spawnFood(); // Red food disappears without ending the game
+      }
     }
   }
 
