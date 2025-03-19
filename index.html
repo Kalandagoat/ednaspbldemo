@@ -64,6 +64,7 @@
   <div id="gameContainer" style="display:none; border: 2px solid #ccc; padding: 20px; margin-top: 10px;">
     <p>🍎 Catch the falling food to save it from being wasted! 🍕</p>
     <canvas id="gameCanvas" width="300" height="400" style="background-color: #f0f0f0;"></canvas>
+    <p>Score: <span id="scoreDisplay">0</span></p>
     <br>
     <button id="exitGame">Exit Game</button>
   </div>
@@ -77,6 +78,7 @@
   const exitButton = document.getElementById('exitGame');
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
+  const scoreDisplay = document.getElementById('scoreDisplay');
 
   let food = { x: Math.random() * 280, y: 0, size: 20, speed: 2 };
   let basket = { x: 130, y: 370, width: 40, height: 10 };
@@ -87,6 +89,7 @@
   function startGame() {
     gameContainer.style.display = 'block';
     score = 0;
+    updateScore();
     food.y = 0;
     food.x = Math.random() * 280;
     gameInterval = setInterval(updateGame, 20);
@@ -116,6 +119,7 @@
       food.x < basket.x + basket.width
     ) {
       score++;
+      updateScore();
       food.y = 0;
       food.x = Math.random() * 280;
     }
@@ -128,13 +132,49 @@
     }
   }
 
-  // Handle basket movement
+  // Update score display
+  function updateScore() {
+    scoreDisplay.textContent = score;
+  }
+
+  // Handle keyboard controls
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' && basket.x > 0) {
       basket.x -= 10;
     }
     if (e.key === 'ArrowRight' && basket.x < canvas.width - basket.width) {
       basket.x += 10;
+    }
+  });
+
+  // Handle touch controls
+  let touchStartX = 0;
+
+  canvas.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  });
+
+  canvas.addEventListener('touchmove', (e) => {
+    let touchEndX = e.touches[0].clientX;
+    let diff = touchEndX - touchStartX;
+
+    if (Math.abs(diff) > 10) {
+      if (diff > 0 && basket.x < canvas.width - basket.width) {
+        basket.x += 10; // Swipe right
+      } else if (diff < 0 && basket.x > 0) {
+        basket.x -= 10; // Swipe left
+      }
+      touchStartX = touchEndX;
+    }
+  });
+
+  // Alternative touch control: tap left/right side of canvas
+  canvas.addEventListener('click', (e) => {
+    let clickX = e.clientX - canvas.getBoundingClientRect().left;
+    if (clickX < canvas.width / 2 && basket.x > 0) {
+      basket.x -= 10; // Tap left side
+    } else if (clickX >= canvas.width / 2 && basket.x < canvas.width - basket.width) {
+      basket.x += 10; // Tap right side
     }
   });
 
