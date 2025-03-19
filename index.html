@@ -20,24 +20,64 @@
     <p>Food waste is a critical issue impacting food security, the environment, and economies. By reducing food waste, we can contribute to Zero Hunger (UNSDG 2) and create a more sustainable world.</p>
   </section>
 
-  <section id="food-logger">
-    <h2>Food Logger</h2>
-    <p>Track your food waste here and see how small changes can make a big impact!</p>
-    <form id="food-form">
-      <label for="food-name">Food Item:</label>
-      <input type="text" id="food-name" placeholder="What food are you discarding?" required>
-      
-      <label for="quantity">Quantity (kg):</label>
-      <input type="number" id="quantity" step="0.1" min="0" placeholder="Amount discarded" required>
+<section id="food-logger">
+  <h2>Food Logger</h2>
+  <p>Track your food waste here and see how small changes can make a big impact!</p>
+  <form id="food-form">
+    <label for="food-name">Food Item:</label>
+    <input type="text" id="food-name" placeholder="What food are you discarding?" required>
+    
+    <label for="quantity">Quantity (kg):</label>
+    <input type="number" id="quantity" step="0.1" min="0" placeholder="Amount discarded" required>
 
-      <button type="submit">Log Food Waste</button>
-    </form>
+    <button type="submit">Log Food Waste</button>
+  </form>
 
-    <div id="log-output">
-      <h3>Your Food Waste Log:</h3>
-      <ul id="log-list"></ul>
-    </div>
-  </section>
+  <div id="log-output">
+    <h3>Your Food Waste Log:</h3>
+    <ul id="log-list"></ul>
+    <button id="copy-log">Copy to Clipboard</button>
+  </div>
+</section>
+
+<script>
+  document.getElementById('food-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const foodName = document.getElementById('food-name').value.trim();
+    const quantity = document.getElementById('quantity').value.trim();
+
+    if (foodName && quantity) {
+      const logList = document.getElementById('log-list');
+      const listItem = document.createElement('li');
+      listItem.textContent = `${foodName} - ${quantity} kg`;
+      logList.appendChild(listItem);
+
+      // Clear inputs after logging
+      document.getElementById('food-name').value = '';
+      document.getElementById('quantity').value = '';
+    }
+  });
+
+  document.getElementById('copy-log').addEventListener('click', function() {
+    const logItems = document.querySelectorAll('#log-list li');
+    let logText = '';
+    logItems.forEach(item => {
+      logText += `${item.textContent}\n`;
+    });
+
+    if (logText) {
+      navigator.clipboard.writeText(logText).then(() => {
+        alert('Food waste log copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy log: ', err);
+        alert('Failed to copy log.');
+      });
+    } else {
+      alert('No log to copy.');
+    }
+  });
+</script>
 
   <!-- New Section: Food Rescue Map -->
   <section id="food-rescue-map">
