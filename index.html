@@ -62,7 +62,7 @@
 
 <!-- Include TensorFlow.js -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/food101"></script>
 
 <section id="food-image-recognition">
   <h2>Food Image Recognition</h2>
@@ -89,17 +89,16 @@
         previewImage.src = e.target.result;
         previewImage.style.display = 'block';
         
-        // Load the MobileNet model
-        const model = await mobilenet.load();
+        // Load the Food-101 model
+        const model = await food101.load();
 
         // Create an HTML image element
         const img = new Image();
         img.src = e.target.result;
         img.onload = async () => {
-          // Predict the image class
+          // Predict the food class
           const predictions = await model.classify(img);
 
-          // Display the top prediction
           if (predictions.length > 0) {
             result.textContent = `Prediction: ${predictions[0].className} (${(predictions[0].probability * 100).toFixed(2)}%)`;
           } else {
