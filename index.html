@@ -57,12 +57,14 @@
   <h2>Gamification and Rewards</h2>
   <p>Engage in food waste reduction challenges and earn rewards! Participate in gamified activities to track your food-saving efforts.</p>
   <button id="startChallengeBtn" onclick="startGame()">Start Challenge</button>
+  
   <div id="gameArea" style="display:none; margin-top: 20px; padding: 10px; border: 2px solid #ccc; border-radius: 10px;">
     <p id="gameMessage">Catch the falling food items to save them from waste!</p>
     <canvas id="gameCanvas" width="400" height="300" style="background-color: #f0f0f0;"></canvas>
     <br>
     <button onclick="exitGame()">Exit Game</button>
   </div>
+
   <p>Earn rewards and badges for minimizing food waste and sharing your successes with the community.</p>
 </section>
 
@@ -71,8 +73,13 @@
   let food = [];
   let gameInterval;
   let score = 0;
+  let gameRunning = false;
 
   function startGame() {
+    // Prevent multiple intervals
+    if (gameRunning) return;
+
+    gameRunning = true;
     document.getElementById('gameArea').style.display = 'block';
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
@@ -89,6 +96,8 @@
       });
     }
 
+    // Clear any existing interval before starting a new one
+    clearInterval(gameInterval);
     gameInterval = setInterval(updateGame, 20);
   }
 
@@ -104,7 +113,7 @@
 
       item.y += item.speed;
 
-      // Catch food at the bottom
+      // If food reaches the bottom, increase score and reset position
       if (item.y > canvas.height) {
         food.splice(index, 1);
         score++;
@@ -125,7 +134,10 @@
 
   function exitGame() {
     clearInterval(gameInterval);
+    gameRunning = false;
     document.getElementById('gameArea').style.display = 'none';
+    score = 0;
+    food = [];
   }
 </script>
 
