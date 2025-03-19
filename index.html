@@ -80,10 +80,23 @@
   const ctx = canvas.getContext('2d');
   const scoreDisplay = document.getElementById('scoreDisplay');
 
-  let food = { x: Math.random() * 280, y: 0, size: 30, speed: 2, type: 'apple' };
-  let basket = { x: 130, y: 370, width: 40, height: 10 };
+  let food = {
+    x: Math.random() * 280,
+    y: 0,
+    size: 40,
+    speed: 2,
+    type: 'apple',
+    image: new Image()
+  };
+  let basket = { x: 130, y: 370, width: 60, height: 10 };
   let score = 0;
   let gameInterval;
+
+  // Load images
+  const appleImage = new Image();
+  appleImage.src = 'https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg'; // Apple image URL
+  const burgerImage = new Image();
+  burgerImage.src = 'https://upload.wikimedia.org/wikipedia/commons/4/4d/Cheeseburger.jpg'; // Burger image URL
 
   // Start game function
   function startGame() {
@@ -98,17 +111,16 @@
   function spawnFood() {
     food.y = 0;
     food.x = Math.random() * 280;
-    food.type = Math.random() < 0.7 ? 'apple' : 'burger'; // 70% chance apple, 30% burger
+    food.type = Math.random() < 0.7 ? 'apple' : 'burger';
+    food.image = food.type === 'apple' ? appleImage : burgerImage;
   }
 
   // Update game state
   function updateGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw food emoji
-    ctx.font = `${food.size}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.fillText(food.type === 'apple' ? '🍎' : '🍔', food.x, food.y);
+    // Draw food image
+    ctx.drawImage(food.image, food.x, food.y, food.size, food.size);
 
     // Draw basket
     ctx.fillStyle = 'blue';
@@ -139,7 +151,7 @@
         clearInterval(gameInterval);
         gameContainer.style.display = 'none';
       } else {
-        spawnFood(); // Burger disappears without ending the game
+        spawnFood(); // Let bad food drop without ending the game
       }
     }
   }
