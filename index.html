@@ -64,7 +64,6 @@
     <br>
     <button onclick="exitGame()">Exit Game</button>
   </div>
-
   <p>Earn rewards and badges for minimizing food waste and sharing your successes with the community.</p>
 </section>
 
@@ -73,13 +72,8 @@
   let food = [];
   let gameInterval;
   let score = 0;
-  let gameRunning = false;
 
   function startGame() {
-    // Prevent multiple intervals
-    if (gameRunning) return;
-
-    gameRunning = true;
     document.getElementById('gameArea').style.display = 'block';
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
@@ -96,8 +90,6 @@
       });
     }
 
-    // Clear any existing interval before starting a new one
-    clearInterval(gameInterval);
     gameInterval = setInterval(updateGame, 20);
   }
 
@@ -113,7 +105,7 @@
 
       item.y += item.speed;
 
-      // If food reaches the bottom, increase score and reset position
+      // Catch food at the bottom
       if (item.y > canvas.height) {
         food.splice(index, 1);
         score++;
@@ -134,10 +126,7 @@
 
   function exitGame() {
     clearInterval(gameInterval);
-    gameRunning = false;
     document.getElementById('gameArea').style.display = 'none';
-    score = 0;
-    food = [];
   }
 </script>
 
