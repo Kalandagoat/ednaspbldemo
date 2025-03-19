@@ -23,15 +23,26 @@
 <section id="food-logger">
   <h2>Food Logger</h2>
   <p>Track your food waste here and see how small changes can make a big impact!</p>
+
+  <!-- Image Upload for Food Type Recognition -->
   <form id="food-form">
     <label for="food-name">Food Item:</label>
     <input type="text" id="food-name" placeholder="What food are you discarding?" required>
     
     <label for="quantity">Quantity (kg):</label>
     <input type="number" id="quantity" step="0.1" min="0" placeholder="Amount discarded" required>
+    
+    <label for="food-image">Upload Image (Optional):</label>
+    <input type="file" id="food-image" accept="image/*">
 
     <button type="submit">Log Food Waste</button>
   </form>
+
+  <!-- Food Type Recognition Result -->
+  <div id="classification-result" style="margin-top: 10px;"></div>
+
+  <!-- Sorting Suggestion -->
+  <div id="suggestion" style="margin-top: 10px;"></div>
 
   <div id="log-output">
     <h3>Your Food Waste Log:</h3>
@@ -40,43 +51,123 @@
   </div>
 </section>
 
+<!-- Compost Bin Dashboard -->
+<section id="compost-dashboard">
+  <h2>Compost Bin Status</h2>
+  <p><strong>Current Level:</strong> <span id="compost-level">0%</span></p>
+  <p><strong>Temperature:</strong> <span id="compost-temp">N/A</span> °C</p>
+  <p><strong>Humidity:</strong> <span id="compost-humidity">N/A</span> %</p>
+  <p><strong>Estimated Decomposition Time:</strong> <span id="decomposition-time">N/A</span></p>
+  
+  <!-- Dynamic Composting Tips -->
+  <h3>Composting Tips:</h3>
+  <p id="compost-tip">Add more green materials to speed up decomposition!</p>
+
+  <!-- Progress Tracking -->
+  <h3>Total Composted:</h3>
+  <p><span id="compost-total">0 kg</span></p>
+</section>
+
 <script>
+  let totalComposted = 0;
+
+  // Mock Food Classification (replace with AI API later)
+  function classifyFood(foodName) {
+    const compostable = ['fruit', 'vegetable', 'bread'];
+    const donation = ['packaged', 'canned', 'sealed'];
+    
+    if (compostable.some(type => foodName.includes(type))) {
+      return 'compostable';
+    } else if (donation.some(type => foodName.includes(type))) {
+      return 'donation';
+    } else {
+      return 'landfill';
+    }
+  }
+
+  // Handle Form Submission
   document.getElementById('food-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const foodName = document.getElementById('food-name').value.trim();
-    const quantity = document.getElementById('quantity').value.trim();
+    const foodName = document.getElementById('food-name').value.trim().toLowerCase();
+    const quantity = parseFloat(document.getElementById('quantity').value);
 
     if (foodName && quantity) {
+      // Classification
+      const classification = classifyFood(foodName);
+      const result = document.getElementById('classification-result');
+      result.textContent = `Classification: ${classification}`;
+
+      // Suggestion
+      const suggestion = document.getElementById('suggestion');
+      if (classification === 'compostable') {
+        suggestion.textContent = 'This is compostable.';
+        totalComposted += quantity;
+        updateCompostDashboard();
+        // Send signal to smart bin (mocked)
+        console.log('Opening compost bin lid...');
+      } else if (classification === 'donation') {
+        suggestion.textContent = 'This should go to food donation.';
+      } else {
+        suggestion.textContent = 'This should go to landfill.';
+      }
+
+      // Add to log
       const logList = document.getElementById('log-list');
       const listItem = document.createElement('li');
-      listItem.textContent = `${foodName} - ${quantity} kg`;
+      listItem.textContent = `${foodName} - ${quantity} kg (${classification})`;
       logList.appendChild(listItem);
 
-      // Clear inputs after logging
+      // Clear inputs
       document.getElementById('food-name').value = '';
       document.getElementById('quantity').value = '';
+      document.getElementById('food-image').value = '';
     }
   });
 
-  document.getElementById('copy-log').addEventListener('click', function() {
+  // Copy Log to Clipboard
+  document.getElementById('copy-log').addEventListener('click', () => {
     const logItems = document.querySelectorAll('#log-list li');
     let logText = '';
-    logItems.forEach(item => {
-      logText += `${item.textContent}\n`;
-    });
+    logItems.forEach(item => logText += `${item.textContent}\n`);
 
     if (logText) {
       navigator.clipboard.writeText(logText).then(() => {
         alert('Food waste log copied to clipboard!');
       }).catch(err => {
-        console.error('Failed to copy log: ', err);
         alert('Failed to copy log.');
       });
     } else {
       alert('No log to copy.');
     }
   });
+
+  // Update Compost Dashboard
+  function updateCompostDashboard() {
+    document.getElementById('compost-total').textContent = `${totalComposted.toFixed(1)} kg`;
+    
+    // Mock data for compost monitoring
+    const level = Math.min(100, totalComposted * 5);
+    const temp = 35 + (Math.random() * 5); // Random between 35–40°C
+    const humidity = 50 + (Math.random() * 10); // Random between 50–60%
+    const decompositionTime = Math.max(1, 30 - (totalComposted * 2)); // Decreases with more composting
+
+    document.getElementById('compost-level').textContent = `${level.toFixed(1)}%`;
+    document.getElementById('compost-temp').textContent = `${temp.toFixed(1)}`;
+    document.getElementById('compost-humidity').textContent = `${humidity.toFixed(1)}`;
+    document.getElementById('decomposition-time').textContent = `${decompositionTime.toFixed(0)} days`;
+
+    // Dynamic Composting Tip
+    const tip = document.getElementById('compost-tip');
+    if (humidity > 60) {
+      tip.textContent = 'Too wet? Add more brown materials like paper.';
+    } else if (temp > 40) {
+      tip.textContent = 'Too hot? Turn the compost to improve aeration.';
+    } else {
+      tip.textContent = 'Composting is on track!';
+    }
+  }
+
 </script>
 
   <!-- New Section: Food Rescue Map -->
