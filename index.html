@@ -56,76 +56,76 @@
 <section id="gamification">
   <h2>Gamification and Rewards</h2>
   <p>Engage in food waste reduction challenges and earn rewards! Participate in gamified activities to track your food-saving efforts.</p>
-  <button onclick="startGame()">Start Challenge</button>
-  <p>Earn rewards and badges for minimizing food waste and sharing your successes with the community.</p>
-  
-  <div id="game-area" style="display:none; border: 2px solid #ccc; padding: 10px; margin-top: 10px;">
-    <p>Collect the good food, avoid the waste!</p>
-    <div id="game-board" style="position: relative; width: 300px; height: 400px; background-color: #f0f0f0; border: 2px solid #000; overflow: hidden;">
-      <div id="food" style="position: absolute; width: 30px; height: 30px; background-color: green;"></div>
-      <div id="waste" style="position: absolute; width: 30px; height: 30px; background-color: red;"></div>
-    </div>
-    <p>Score: <span id="score">0</span></p>
+  <button id="startChallengeBtn" onclick="startGame()">Start Challenge</button>
+  <div id="gameArea" style="display:none; margin-top: 20px; padding: 10px; border: 2px solid #ccc; border-radius: 10px;">
+    <p id="gameMessage">Catch the falling food items to save them from waste!</p>
+    <canvas id="gameCanvas" width="400" height="300" style="background-color: #f0f0f0;"></canvas>
+    <br>
+    <button onclick="exitGame()">Exit Game</button>
   </div>
+  <p>Earn rewards and badges for minimizing food waste and sharing your successes with the community.</p>
 </section>
 
 <script>
+  let canvas, ctx;
+  let food = [];
+  let gameInterval;
   let score = 0;
-  let foodInterval, wasteInterval;
 
   function startGame() {
-    document.getElementById('game-area').style.display = 'block';
+    document.getElementById('gameArea').style.display = 'block';
+    canvas = document.getElementById('gameCanvas');
+    ctx = canvas.getContext('2d');
     score = 0;
-    document.getElementById('score').textContent = score;
+    food = [];
 
-    const food = document.getElementById('food');
-    const waste = document.getElementById('waste');
+    // Create random falling food items
+    for (let i = 0; i < 5; i++) {
+      food.push({
+        x: Math.random() * canvas.width,
+        y: -Math.random() * canvas.height,
+        size: 20,
+        speed: 2 + Math.random() * 3
+      });
+    }
 
-    // Reset food and waste positions
-    food.style.top = '0px';
-    food.style.left = Math.random() * 270 + 'px';
-    waste.style.top = '0px';
-    waste.style.left = Math.random() * 270 + 'px';
+    gameInterval = setInterval(updateGame, 20);
+  }
 
-    // Move food down
-    foodInterval = setInterval(() => {
-      let top = parseInt(food.style.top);
-      if (top >= 370) {
-        food.style.top = '0px';
-        food.style.left = Math.random() * 270 + 'px';
-        score += 10;
-        document.getElementById('score').textContent = score;
-      } else {
-        food.style.top = top + 5 + 'px';
+  function updateGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw and update falling food items
+    food.forEach((item, index) => {
+      ctx.fillStyle = 'green';
+      ctx.beginPath();
+      ctx.arc(item.x, item.y, item.size, 0, Math.PI * 2);
+      ctx.fill();
+
+      item.y += item.speed;
+
+      // Catch food at the bottom
+      if (item.y > canvas.height) {
+        food.splice(index, 1);
+        score++;
+        food.push({
+          x: Math.random() * canvas.width,
+          y: -20,
+          size: 20,
+          speed: 2 + Math.random() * 3
+        });
       }
-    }, 50);
+    });
 
-    // Move waste down
-    wasteInterval = setInterval(() => {
-      let top = parseInt(waste.style.top);
-      if (top >= 370) {
-        waste.style.top = '0px';
-        waste.style.left = Math.random() * 270 + 'px';
-      } else {
-        waste.style.top = top + 5 + 'px';
-      }
-    }, 50);
+    // Display score
+    ctx.fillStyle = 'black';
+    ctx.font = '16px Arial';
+    ctx.fillText(`Score: ${score}`, 10, 20);
+  }
 
-    // Add click event to collect food
-    food.onclick = () => {
-      score += 10;
-      document.getElementById('score').textContent = score;
-      food.style.top = '0px';
-      food.style.left = Math.random() * 270 + 'px';
-    };
-
-    // Add click event to avoid waste
-    waste.onclick = () => {
-      score -= 5;
-      document.getElementById('score').textContent = score;
-      waste.style.top = '0px';
-      waste.style.left = Math.random() * 270 + 'px';
-    };
+  function exitGame() {
+    clearInterval(gameInterval);
+    document.getElementById('gameArea').style.display = 'none';
   }
 </script>
 
